@@ -1,6 +1,11 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize('test_node', 'user', 'secret', {
-    host: 'localhost',
-    dialect: 'postgres'
-});
+export const sequelize = new Sequelize(
+    process.env.DATABASE,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
+    {
+        host: 'localhost',
+        dialect: 'postgres'
+    }
+);
