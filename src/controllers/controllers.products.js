@@ -32,14 +32,21 @@ class ProductsController {
 
     async view(req, res) {
         try {
-            const product = await Product.findByPk(req.params.id);
+            const product = await Product.findByPk(req.params.id, {
+                attributes: { exclude: ['createdAt', 'updatedAt'] }
+            });
 
             if (product === null) {
                 this.returnNotFound(req, res);
+                return;
             }
 
             res.status(200);
-            res.json(product.dataValues);
+            res.json({
+                status: 200,
+                msg: "Se ha encontrado el producto",
+                product: product.dataValues
+            });
         } catch (error) {
             res.status(500);
             res.json({
@@ -84,14 +91,14 @@ class ProductsController {
                     msg: "Error al crear el producto",
                     errors: error.errors
                 });
+            } else {
+                res.status(500);
+                res.json({
+                    status: 500,
+                    msg: "Error al crear el producto",
+                    errors: error.message
+                });
             }
-
-            res.status(500);
-            res.json({
-                status: 500,
-                msg: "Error al crear el producto",
-                errors: error.message
-            });
         }
     }
 
@@ -109,6 +116,7 @@ class ProductsController {
             const product = await Product.findByPk(req.params.id);
             if (product === null) {
                 this.returnNotFound(req, res);
+                return;
             }
             product.name = name;
             product.reference = reference;
@@ -132,14 +140,14 @@ class ProductsController {
                     msg: "Error al crear el producto",
                     errors: error.errors
                 });
+            } else {
+                res.status(500);
+                res.json({
+                    status: 500,
+                    msg: "Error al actualizar el producto",
+                    errors: error.message
+                });
             }
-
-            res.status(500);
-            res.json({
-                status: 500,
-                msg: "Error al actualizar el producto",
-                errors: error.message
-            });
         }
     }
 
@@ -149,6 +157,7 @@ class ProductsController {
 
             if (product === null) {
                 this.returnNotFound(req, res);
+                return;
             }
 
             await Product.destroy({
